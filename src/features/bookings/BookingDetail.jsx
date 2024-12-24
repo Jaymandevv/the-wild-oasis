@@ -16,6 +16,7 @@ import useCheckout from "../check-in-out/useCheckout";
 import useDeleteBooking from "./useDeleteBooking";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import Empty from "../../ui/Empty";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -28,10 +29,12 @@ function BookingDetail() {
   const { checkout, isCheckingOut } = useCheckout();
   const { deleteBook, isDeletingBooking } = useDeleteBooking();
 
-  const { status, id, cabins: { name: cabinName } = {} } = booking;
-
   const moveBack = useMoveBack();
   const navigate = useNavigate();
+
+  if (isLoading) return <Spinner />;
+
+  if (!booking) return <Empty resourceName="booking" />;
 
   const statusToTagName = {
     unconfirmed: "blue",
@@ -39,7 +42,11 @@ function BookingDetail() {
     "checked-out": "silver",
   };
 
-  if (isLoading) return <Spinner />;
+  const {
+    status,
+    id,
+    cabins: { name: cabinName },
+  } = booking;
 
   return (
     <>
@@ -54,9 +61,7 @@ function BookingDetail() {
       <BookingDataBox booking={booking} />
 
       <ButtonGroup>
-        {status === "unconfirmed" && (
-          <Button onClick={() => navigate(`/checkin/${id}`)}>Check in</Button>
-        )}
+        {status === "unconfirmed" && <Button onClick={() => navigate(`/checkin/${id}`)}>Check in</Button>}
 
         {status === "checked-in" && (
           <Button onClick={() => checkout(id)} disabled={isCheckingOut}>

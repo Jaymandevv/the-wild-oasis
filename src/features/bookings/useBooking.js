@@ -6,7 +6,7 @@ function useBooking() {
   const { bookingId } = useParams();
 
   const {
-    data: booking = {},
+    data: booking,
     isLoading,
     error,
   } = useQuery({

@@ -74,19 +74,14 @@ function Menus({ children }) {
   const close = () => setOpenId("");
   const open = setOpenId;
 
-  return (
-    <MenuContext.Provider
-      value={{ openId, close, open, position, setPosition }}
-    >
-      {children}
-    </MenuContext.Provider>
-  );
+  return <MenuContext.Provider value={{ openId, close, open, position, setPosition }}>{children}</MenuContext.Provider>;
 }
 
 function Toggle({ id }) {
   const { open, close, openId, setPosition } = useContext(MenuContext);
 
   function handleClick(e) {
+    e.stopPropagation();
     const rect = e.target.closest("button").getBoundingClientRect();
 
     setPosition({
@@ -107,7 +102,7 @@ function Toggle({ id }) {
 function List({ children, id }) {
   const { openId, position, close } = useContext(MenuContext);
 
-  const { ref } = useOusideClick(close);
+  const { ref } = useOusideClick(close, false);
 
   if (openId !== id) return null;
 
